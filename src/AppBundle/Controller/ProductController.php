@@ -20,25 +20,48 @@ class ProductController extends Controller
     }
 
     /**
-     * @Route("/{id}/add-to-cart")
+     * @Route("/{id}/add-to-cart", name="product_add_to_cart")
      * @Template()
      */
     public function addToCartAction($id)
     {
-        return array(
-            // ...
-        );
+        if (!$product = $this->getProduct($id)) {
+            throw $this->createNotFoundException("Produkt nie znaleziony!");
+        }
+        
+        // sesja
+        $session = $this->get('session');
+        // koszyk
+        $basket = $session->get('basket', []);
+        
+        if (!array_key_exists($id, $basket)) {
+            $basket[$id] = [
+                'name' => $product['name'],
+                'price' => $product['price'],
+                'quantity' => 1
+            ];
+        } else {
+            $basket[$id]['quantity']++;
+        }
+        
+        // aktualizujemy koszyk
+        $session->set('basket', $basket);
+        
+        $this->addFlash('success', 'Produkt został pomyślnie dodany do koszyka.');
+        
+        return $this->redirectToRoute('product_basket');
     }
 
     /**
-     * @Route("/basket")
-     * @Template()
+     * @Route("/basket", name="product_basket")
      */
     public function basketAction()
     {
-        return array(
-            // ...
-        );
+        $products = $this->get('session')->get('basket', []);
+        
+        return $this->render('product/basket.html.twig', [
+            'products' => $products
+        ]);
     }
 
     /**
@@ -63,6 +86,11 @@ class ProductController extends Controller
         );
     }
 
+    /**
+     * Zwraca listę produktów
+     * 
+     * @return array
+     */
     private function getProducts()
     {
         $file = file('product.txt');
@@ -78,5 +106,22 @@ class ProductController extends Controller
         }
 
         return $products;
+    }
+    
+    /**
+     * Pobiera produkt o zadanym $id
+     * 
+     * @param int $id
+     * @return array
+     */
+    private function getProduct($id)
+    {
+        $products = $this->getProducts();
+        
+        if (array_key_exists($id, $products)) {
+            return $products[$id];
+        }
+        
+        return null;
     }
 }
