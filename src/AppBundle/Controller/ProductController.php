@@ -8,14 +8,15 @@ class ProductController extends Controller
 {
 
     /**
-     * @Route("/list")
-     * @Template()
+     * @Route("/list", name="product_list")
      */
     public function listAction()
     {
-        return array(
-            // ...
-        );
+        $products = $this->getProducts();
+        
+        return $this->render('product/list.html.twig', [
+            'products' => $products
+        ]);
     }
 
     /**
@@ -60,5 +61,22 @@ class ProductController extends Controller
         return array(
             // ...
         );
+    }
+
+    private function getProducts()
+    {
+        $file = file('product.txt');
+        $products = [];
+        foreach ($file as $p) {
+            $e = explode(':', trim($p));
+            $products[$e[0]] = array(
+                'id' => $e[0],
+                'name' => $e[1],
+                'price' => $e[2],
+                'description' => $e[3],
+            );
+        }
+
+        return $products;
     }
 }
