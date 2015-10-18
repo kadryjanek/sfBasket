@@ -12,7 +12,7 @@
 
         <div class="container">
             {% for type in ['success', 'danger'] %}
-                {% for flashMessage in app.session.flashbag.get('success') %}
+                {% for flashMessage in app.session.flashbag.get(type) %}
 
                     <div class="alert alert-{{ type }}" role="alert">
                         {{ flashMessage }}
