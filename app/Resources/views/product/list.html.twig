@@ -11,7 +11,8 @@
             <tr>
                 <th>{{ knp_pagination_sortable(products, 'ID', 'p.id') }}</th>
                 <th>{{ knp_pagination_sortable(products, 'Nazwa produktu', 'p.name') }}</th>
-                <th>Cena</th>
+                <th>{{ knp_pagination_sortable(products, 'Kategoria', 'c.name') }}</th>
+                <th>{{ knp_pagination_sortable(products, 'Cena', 'p.price') }}</th>
                 <th>Opis</th>
                 <th> </th>
             </tr>
@@ -21,6 +22,7 @@
                 <tr>
                     <td>{{ product.id }}</td>
                     <td>{{ product.name }}</td>
+                    <td>{{ product.category.name }}</td>
                     <td>{{ product.price }}</td>
                     <td>{{ product.description }}</td>
                     <td><a class="btn btn-primary btn-sm" href="{{ path('product_add_to_cart', {'id': product.id}) }}" > Dodaj do koszyka</a>

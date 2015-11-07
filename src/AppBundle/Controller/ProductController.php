@@ -14,15 +14,24 @@ class ProductController extends Controller
      */
     public function listAction(Request $request)
     {
+//        $qb = $this->getDoctrine()
+//            ->getRepository('AppBundle:Product')
+//            ->createQueryBuilder('p')
+//            ->select(['p', 'c'])
+//            ->innerJoin('p.category', 'c');
+        
         $qb = $this->getDoctrine()
-            ->getRepository('AppBundle:Product')
-            ->createQueryBuilder('p');
+            ->getManager()
+            ->createQueryBuilder()
+            ->from('AppBundle:Product', 'p')
+            ->select(['p', 'c'])
+            ->innerJoin('p.category', 'c');
 
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $qb, 
             $request->query->getInt('page', 1)/* page number */,
-            10/* limit per page */
+            25/* limit per page */
         );
 
         return $this->render('product/list.html.twig', [
