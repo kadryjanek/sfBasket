@@ -4,6 +4,7 @@ use AppBundle\Entity\Product;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProductController extends Controller
 {
@@ -11,14 +12,21 @@ class ProductController extends Controller
     /**
      * @Route("/list", name="product_list")
      */
-    public function listAction()
+    public function listAction(Request $request)
     {
-        $products = $this->getDoctrine()
+        $qb = $this->getDoctrine()
             ->getRepository('AppBundle:Product')
-            ->findAll();
-        
+            ->createQueryBuilder('p');
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $qb, 
+            $request->query->getInt('page', 1)/* page number */,
+            10/* limit per page */
+        );
+
         return $this->render('product/list.html.twig', [
-            'products' => $products
+            'products' => $pagination
         ]);
     }
 
@@ -31,16 +39,14 @@ class ProductController extends Controller
 //        $product = $this->getDoctrine()
 //            ->getRepository('AppBundle:Product')
 //            ->find($id);
-        
 //        if (!$product) {
 //            throw $this->createNotFoundException("Produkt nie znaleziony!");
 //        }
-        
         // sesja
         $session = $this->get('session');
         // koszyk
         $basket = $session->get('basket', []);
-        
+
         if (!array_key_exists($product->getId(), $basket)) {
             $basket[$product->getId()] = [
                 'name' => $product->getName(),
@@ -48,14 +54,14 @@ class ProductController extends Controller
                 'quantity' => 1
             ];
         } else {
-            $basket[$product->getId()]['quantity']++;
+            $basket[$product->getId()]['quantity'] ++;
         }
-        
+
         // aktualizujemy koszyk
         $session->set('basket', $basket);
-        
+
         $this->addFlash('success', 'Produkt został pomyślnie dodany do koszyka.');
-        
+
         return $this->redirectToRoute('product_basket');
     }
 
@@ -65,9 +71,9 @@ class ProductController extends Controller
     public function basketAction()
     {
         $products = $this->get('session')->get('basket', []);
-        
+
         return $this->render('product/basket.html.twig', [
-            'products' => $products
+                'products' => $products
         ]);
     }
 
@@ -92,5 +98,4 @@ class ProductController extends Controller
             // ...
         );
     }
-
 }
