@@ -45,29 +45,16 @@ class ProductController extends Controller
      */
     public function addToCartAction(Product $product)
     {
+        // alternatywna wersja bez wymuszania typu z argumencie metody
 //        $product = $this->getDoctrine()
 //            ->getRepository('AppBundle:Product')
 //            ->find($id);
 //        if (!$product) {
 //            throw $this->createNotFoundException("Produkt nie znaleziony!");
 //        }
-        // sesja
-        $session = $this->get('session');
-        // koszyk
-        $basket = $session->get('basket', []);
 
-        if (!array_key_exists($product->getId(), $basket)) {
-            $basket[$product->getId()] = [
-                'name' => $product->getName(),
-                'price' => $product->getPrice(),
-                'quantity' => 1
-            ];
-        } else {
-            $basket[$product->getId()]['quantity'] ++;
-        }
-
-        // aktualizujemy koszyk
-        $session->set('basket', $basket);
+        $this->getBasket()
+            ->add($product);
 
         $this->addFlash('success', 'Produkt został pomyślnie dodany do koszyka.');
 
@@ -79,32 +66,45 @@ class ProductController extends Controller
      */
     public function basketAction()
     {
-        $products = $this->get('session')->get('basket', []);
-
         return $this->render('product/basket.html.twig', [
-                'products' => $products
+                'basket' => $this->getBasket()
         ]);
     }
 
     /**
-     * @Route("/{id}/remove-from-cart")
-     * @Template()
+     * @Route("/{id}/remove-from-cart", name="product_basket_remove")
      */
-    public function removeFromCartAction($id)
+    public function removeFromCartAction(Product $product)
     {
-        return array(
-            // ...
-        );
+        try {
+            $this->getBasket()
+                ->remove($product);
+            
+            $this->addFlash('success', 'Produkt został pomyślnie usunięty z koszyka.');
+            
+        } catch (\AppBundle\Exception\ProductNotFoundException $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('product_basket');
     }
 
     /**
-     * @Route("/clear-basket")
-     * @Template()
+     * @Route("/clear-basket", name="product_basket_clear")
      */
     public function clearBasketAction()
     {
-        return array(
-            // ...
-        );
+        $this->getBasket()
+            ->clear();
+        
+        return $this->redirectToRoute('product_basket');
+    }
+    
+    /**
+     * @return \AppBundle\Utils\Basket
+     */
+    private function getBasket()
+    {
+        return $this->get('basket');
     }
 }

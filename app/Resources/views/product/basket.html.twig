@@ -6,6 +6,10 @@
     
     <h1>{{ block('title') }}</h1>
     
+    {% if basket.products|length > 0 %}
+        <a href="{{ path('product_basket_clear') }}" title="Wyczyść koszyk" class="btn btn-warning">Wyczyść koszyk</a>
+    {% endif %}
+    
     <table class="table">
         <thead>
             <tr>
@@ -16,16 +20,17 @@
             </tr>
         </thead>
         <tbody>
-            {% for id, product in products %}
+            {% for id, product in basket.products %}
                 <tr>
                     <td>{{ id }}</td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.price }}</td>
                     <td>{{ product.quantity }}</td>
+                    <td><a href="{{ path('product_basket_remove', {'id': id}) }}" class="btn btn-sm btn-danger" title="Usuń produkt">Usuń</a></td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="4">Nie znaleziono produktów.</td>
+                    <td colspan="5">Nie znaleziono produktów.</td>
                 </tr>
             {% endfor %}
         </tbody>
