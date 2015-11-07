@@ -45,14 +45,6 @@ class ProductController extends Controller
      */
     public function addToCartAction(Product $product)
     {
-        // alternatywna wersja bez wymuszania typu z argumencie metody
-//        $product = $this->getDoctrine()
-//            ->getRepository('AppBundle:Product')
-//            ->find($id);
-//        if (!$product) {
-//            throw $this->createNotFoundException("Produkt nie znaleziony!");
-//        }
-
         $this->getBasket()
             ->add($product);
 
