@@ -43,15 +43,16 @@ class ProductController extends Controller
      * @Route("/{id}/add-to-cart", name="product_add_to_cart")
      * @Template()
      */
-    public function addToCartAction(Product $product)
+    public function addToCartAction(Product $product = null)
     {
         // alternatywna wersja bez wymuszania typu z argumencie metody
 //        $product = $this->getDoctrine()
 //            ->getRepository('AppBundle:Product')
 //            ->find($id);
-//        if (!$product) {
-//            throw $this->createNotFoundException("Produkt nie znaleziony!");
-//        }
+        
+        if (!$product) {
+            throw $this->createNotFoundException("Produkt nie znaleziony!");
+        }
 
         $this->getBasket()
             ->add($product);
