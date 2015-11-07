@@ -91,4 +91,22 @@ class Basket
         return $this->session->get('basket', []);
     }
 
+    
+    public function getTotalAmount()
+    {
+        $amount = 0;
+        foreach ($this->getProducts() as $product) {
+            $amount += $product['price'] * $product['quantity'];
+        }
+        return $amount;
+    }
+    
+    public function getTotalQuantity()
+    {
+        $quantity = 0;
+        foreach ($this->getProducts() as $product) {
+            $quantity += $product['quantity'];
+        }
+        return $quantity;
+    }
 }

@@ -14,6 +14,8 @@
             
             <a href="{{ path('homepage') }}" >Strona główna</a>
             
+            {{ render(controller('AppBundle:Product:basketBox')) }}
+            
             {% for type in ['success', 'danger'] %}
                 {% for flashMessage in app.session.flashbag.get(type) %}
 

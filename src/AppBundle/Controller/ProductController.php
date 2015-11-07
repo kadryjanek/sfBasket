@@ -100,6 +100,13 @@ class ProductController extends Controller
         return $this->redirectToRoute('product_basket');
     }
     
+    public function basketBoxAction()
+    {
+        return $this->render('product/basketBox.html.twig', [
+            'basket' => $this->getBasket()
+        ]);
+    }
+    
     /**
      * @return \AppBundle\Utils\Basket
      */
