@@ -11,14 +11,25 @@ class ProductController extends Controller
 {
 
     /**
-     * @Route("/list")
-     * @Template()
+     * @Route("/list/{page}", defaults={"page"=1})
      */
-    public function listAction()
+    public function listAction($page)
     {
-        return array(
-            // ...
-        );
+        $qb = $this->getDoctrine()
+            ->getManager()
+            ->createQueryBuilder()
+            ->from('AppBundle:Product', 'p')
+            ->select(['p', 'c'])
+            ->innerJoin('p.category', 'c');
+        
+        // $products = $qb->getQuery()->getResult();
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate($qb, $page, 20);
+
+        return $this->render('AdminBundle:Product:list.html.twig', [
+            'products' => $pagination
+        ]);
     }
 
     /**

@@ -12,6 +12,11 @@
 
         <div class="container">
             
+            <ul>
+                <li><a href="{{ path('admin_product_list') }}" title="Lista produktów">Lista produktów</a></li>
+                <li><a href="{{ path('admin_category_list') }}" title="Lista kategorii">Lista kategrorii</a></li>
+            </ul>
+            
             {% for type in ['success', 'danger'] %}
                 {% for flashMessage in app.session.flashbag.get(type) %}
 

@@ -1,7 +1,38 @@
-{% extends "::base.html.twig" %}
+{% extends "AdminBundle::base.html.twig" %}
 
-{% block title %}AdminBundle:Product:list{% endblock %}
+{% block title %}Lista produktów{% endblock %}
 
 {% block body %}
-<h1>Welcome to the Product:list page</h1>
+    
+    <h1>{{ block('title') }}</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{{ knp_pagination_sortable(products, 'ID', 'p.id') }}</th>
+                <th>{{ knp_pagination_sortable(products, 'Nazwa produktu', 'p.name') }}</th>
+                <th>{{ knp_pagination_sortable(products, 'Kategoria', 'c.name') }}</th>
+                <th>{{ knp_pagination_sortable(products, 'Cena', 'p.price') }}</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category }}</td>
+                    <td>{{ product.price }}</td>
+                    <td><a class="btn btn-primary btn-sm" href="{{ path('product_add_to_cart', {'id': product.id}) }}" > Dodaj do koszyka</a>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Nie znaleziono produktów.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {{ knp_pagination_render(products) }}
+
 {% endblock %}
