@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Product
@@ -25,13 +26,15 @@ class Product
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * 
+     * @Assert\NotBlank(message="product.name.not_blank")
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="text")
+     * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
 
@@ -39,6 +42,9 @@ class Product
      * @var float
      *
      * @ORM\Column(name="price", type="float")
+     * 
+     * @Assert\NotBlank()
+     * @Assert\GreaterThan(value=0)
      */
     private $price;
 
@@ -46,6 +52,9 @@ class Product
      * @var integer
      *
      * @ORM\Column(name="amount", type="smallint")
+     * 
+     * @Assert\NotBlank()
+     * @Assert\Range(min=0)
      */
     private $amount;
 
@@ -53,6 +62,8 @@ class Product
      * @var Category
      * 
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
+     * 
+     * @Assert\NotBlank()
      */
     private $category;
 

@@ -4,6 +4,8 @@
 
 {% block body %}
     
+    <a href="{{ path('admin_product_new') }}" class="btn btn-success pull-right" title="Dodaj produkt">Dodaj produkt</a>
+    
     <h1>{{ block('title') }}</h1>
 
     <table class="table">
@@ -23,7 +25,10 @@
                     <td>{{ product.name }}</td>
                     <td>{{ product.category }}</td>
                     <td>{{ product.price }}</td>
-                    <td><a class="btn btn-primary btn-sm" href="{{ path('product_add_to_cart', {'id': product.id}) }}" > Dodaj do koszyka</a>
+                    <td>
+                        <a class="btn btn-primary btn-sm" href="{{ path('admin_product_edit', {'id': product.id}) }}" > Edytuj </a>
+                        <a class="btn btn-danger btn-sm" href="{{ path('admin_product_delete', {'id': product.id}) }}" > Usuń </a>
+                    </td>
                 </tr>
             {% else %}
                 <tr>

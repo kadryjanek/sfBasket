@@ -1,8 +1,11 @@
 <?php namespace AdminBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AdminBundle\Form\ProductType;
+use AppBundle\Entity\Product;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/product")
@@ -34,24 +37,54 @@ class ProductController extends Controller
 
     /**
      * @Route("/new")
-     * @Template()
      */
-    public function newAction()
+    public function newAction(Request $request)
     {
-        return array(
-            // ...
-        );
+        $product = new Product();
+        $product->setAmount(0);
+        
+        $form = $this->createForm(new ProductType(), $product);
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($product);
+            $em->flush();
+            
+            $this->addFlash('success', 'Produkt został pomyślnie dodany.');
+            
+            return $this->redirectToRoute('admin_product_list');
+        }
+        
+        return $this->render('AdminBundle:Product:new.html.twig',[
+            'form' => $form->createView()
+        ]);
     }
 
     /**
      * @Route("/edit/{id}")
-     * @Template()
      */
-    public function editAction($id)
+    public function editAction(Product $product, Request $request)
     {
-        return array(
-            // ...
-        );
+        $form = $this->createForm(new ProductType(), $product);
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+            
+            $this->addFlash('success', 'Produkt został pomyślnie zaktualizowany.');
+            
+            return $this->redirectToRoute('admin_product_list');
+        }
+        
+        return $this->render('AdminBundle:Product:edit.html.twig',[
+            'form' => $form->createView()
+        ]);
     }
 
     /**

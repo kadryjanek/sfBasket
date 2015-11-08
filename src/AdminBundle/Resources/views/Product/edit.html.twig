@@ -1,7 +1,17 @@
-{% extends "::base.html.twig" %}
+{% extends "AdminBundle::base.html.twig" %}
 
-{% block title %}AdminBundle:Product:edit{% endblock %}
+{% block title %}Edycja produktu{% endblock %}
 
 {% block body %}
-<h1>Welcome to the Product:edit page</h1>
+    
+    <h1>{{ block('title') }}</h1>
+    
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    
+        {{ form_widget(form) }}
+        
+        <button type="submit" class="btn btn-success pull-right" >Zapisz</button>
+        
+    {{ form_end(form) }}
+    
 {% endblock %}
