@@ -10,9 +10,9 @@ class ProductController extends Controller
 {
 
     /**
-     * @Route("/list", name="product_list")
+     * @Route("/list/{page}", name="product_list", defaults={"page"=1})
      */
-    public function listAction(Request $request)
+    public function listAction($page)
     {
 //        $qb = $this->getDoctrine()
 //            ->getRepository('AppBundle:Product')
@@ -30,7 +30,7 @@ class ProductController extends Controller
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $qb, 
-            $request->query->getInt('page', 1)/* page number */,
+            $page, /* page number */
             25/* limit per page */
         );
 
